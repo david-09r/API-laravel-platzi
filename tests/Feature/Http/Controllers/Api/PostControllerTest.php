@@ -5,6 +5,7 @@ namespace Tests\Feature\Http\Controllers\Api;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\Post;
 
 class PostControllerTest extends TestCase
 {
@@ -35,4 +36,20 @@ class PostControllerTest extends TestCase
       $response->assertStatus(422) //Estatus HTTP 422
       ->assertJsonValidationErrors('title');
     }
+
+  public function test_show()
+  {
+    $post = Post::factory()->create();
+
+    $response = $this->json('GET', "/api/posts/$post->id");
+    $response->assertJsonStructure(['id', 'title', 'created_at', 'updated_at'])
+      ->assertJson(['title' => $post->title])
+      ->assertStatus(200); //OK
+  }
+
+  public function test_404_show()
+  {
+    $response = $this->json('GET', "/api/posts/1000");
+    $response->assertStatus(404); //OK
+  }
 }
