@@ -14,7 +14,7 @@ class PostControllerTest extends TestCase
     public function test_store()
     {
       //Este metodo nos srive para practicamente saltarnos el test de la linea 17 al 19
-      $this->withoutExceptionHandling();
+      //$this->withoutExceptionHandling();
       $response = $this->json('POST', '/api/posts', [
         'title' => 'El post de prueba'
       ]);
@@ -55,7 +55,7 @@ class PostControllerTest extends TestCase
 
   public function test_update()
   {
-    $this->withoutExceptionHandling();
+    //$this->withoutExceptionHandling();
     $post = Post::factory()->create();
 
     $response = $this->json('PUT', "/api/posts/$post->id", [
@@ -67,5 +67,30 @@ class PostControllerTest extends TestCase
       ->assertStatus(200); //OK
 
     $this->assertDatabaseHas('posts', ['title' => 'nuevo']);
+  }
+
+  public function test_delete()
+  {
+    //$this->withoutExceptionHandling();
+    $post = Post::factory()->create();
+
+    $response = $this->json('DELETE', "/api/posts/$post->id");
+
+    $response->assertSee(null);
+    $response->assertStatus(204); //Sin contenido...
+
+    $this->assertDatabaseMissing('posts', ['id' => $post->id]);
+  }
+
+  public function test_index(){
+    Post::factory()->count(5)->create();
+
+    $response = $this->json('GET', '/api/posts');
+
+    $response->assertJsonStructure([
+      'data' => [
+        '*' => ['id', 'title', 'created_at', 'updated_at']
+      ]
+    ])->assertStatus(200);
   }
 }
