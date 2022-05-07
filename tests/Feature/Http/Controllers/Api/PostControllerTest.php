@@ -93,4 +93,16 @@ class PostControllerTest extends TestCase
       ]
     ])->assertStatus(200);
   }
+
+  //Comentado ya que a cambiado la forma de proteger el api y por ende
+  //el curso no funcionaria en laravel 8.x
+//  public function test_guest()
+//  {
+//    $this->json('GET',    '/api/posts')->assertStatus(401);
+//    $this->json('POST',   '/api/posts')->assertStatus(401);
+//    $this->json('PUT',    '/api/posts/1000')->assertStatus(401);
+//   $this->json('GET',    '/api/posts/1000')->assertStatus(401);
+//    $this->json('DELETE', '/api/posts/1000')->assertStatus(401);
+//
+//  }
 }
